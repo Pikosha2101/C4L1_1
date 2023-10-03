@@ -33,23 +33,27 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
         button1.setOnClickListener{
             if (login1.text.isEmpty() || editTextTextPersonName.text.isEmpty() || editTextTextPassword1.text.isEmpty() || editTextTextPassword2.text.isEmpty())
             {
-                Toast.makeText(requireContext(), "Заполните все поля!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Заполните все поля!", Toast.LENGTH_SHORT).show()
             } else {
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     val database = AppDatabase.getInstance(requireContext())
                     val count: Int = database.agentDao().getAgentCount() + 1
 
-                    if (editTextTextPassword1.text.toString().equals(editTextTextPassword2.text.toString())){
-                        val agent = Agent(count, login1.text.toString(), editTextTextPersonName.text.toString(), editTextTextPassword1.text.toString())
+                    if (editTextTextPassword1.text.toString() == editTextTextPassword2.text.toString()){
+                        if (database.agentDao().getAgentCheck(login1.text.toString(), editTextTextPassword1.text.toString()) == 0){
+                            val agent = Agent(count, login1.text.toString(), editTextTextPersonName.text.toString(), editTextTextPassword1.text.toString())
 
-                        database.agentDao().insert(agent)
-                        val agents = database.agentDao().getAllAgents()
-                        Log.d("Agents", agents.toString())
+                            database.agentDao().insert(agent)
+                            val agents = database.agentDao().getAllAgents()
+                            Log.d("Agents", agents.toString())
 
-                        Toast.makeText(requireContext(), "Аккаунт создан!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), "Аккаунт создан!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Аккаунт уже существует!", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        Toast.makeText(requireContext(), "Пароли различаются!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Пароли различаются!", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

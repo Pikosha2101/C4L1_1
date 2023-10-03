@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/authorizationFragment">
+    app:startDestination="@id/firstInputFragment">
 
     <fragment
         android:id="@+id/authorizationFragment"
@@ -33,6 +33,15 @@
         tools:layout="@layout/first_fragment">
         <action
             android:id="@+id/action_firstFragment_to_authorizationFragment"
+            app:destination="@id/authorizationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/firstInputFragment"
+        android:name="com.example.test.fragments.FirstInputFragment"
+        android:label="FirstInputFragment"
+        tools:layout="@layout/first_input_fragment">
+        <action
+            android:id="@+id/action_firstInputFragment_to_authorizationFragment"
             app:destination="@id/authorizationFragment" />
     </fragment>
 </navigation>
