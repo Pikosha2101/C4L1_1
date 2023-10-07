@@ -8,6 +8,7 @@ import androidx.room.Update
 
 @Dao
 interface AgentDao {
+    //insert, upd and etc. - аннотации
     @Insert
     suspend fun insert(agent: Agent)
 

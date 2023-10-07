@@ -18,21 +18,16 @@ import kotlinx.coroutines.launch
 class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
     private var _binding: AuthorizationFragmentBinding? = null
     private val binding get() = _binding!!
-    private val MY_SETTINGS = "my_settings"
 
     private val PREFS_NAME = "UserPrefs"
     private val KEY_LOGIN_COUNT = "loginCount"
     private val KEY_MOST_LOGGED_IN_USER = "mostLoggedInUser"
-
-    private lateinit var sp : SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        sp = requireContext().getSharedPreferences(MY_SETTINGS, 0)
-
         _binding = AuthorizationFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -50,14 +45,16 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
                     if (cnt == 1) {
                         val username = editTextTextEmailAddress.text.toString()
                         val sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, 0)
-                        //получение кол-ва заходов у конкретного юзера
-                        val currentCount = sharedPreferences.getInt("$username$KEY_LOGIN_COUNT", 0)
+                        //получение кол-ва заходов у текущего юзера
+                        val currentCount = sharedPreferences.getInt(username + KEY_LOGIN_COUNT, 0)
                         //это кол-во + 1
-                        sharedPreferences.edit().putInt("$username$KEY_LOGIN_COUNT", currentCount + 1).apply()
+                        sharedPreferences.edit().putInt(username + KEY_LOGIN_COUNT, currentCount + 1).apply()
 
-                        // Если самая часто авторизующаяся учетка - обновление ее
+                        //самый юзер
                         val mostLoggedInUser = sharedPreferences.getString(KEY_MOST_LOGGED_IN_USER, "")
-                        val mostLoggedInCount = sharedPreferences.getInt("$mostLoggedInUser$KEY_LOGIN_COUNT", 0)
+                        //его кол-во
+                        val mostLoggedInCount = sharedPreferences.getInt(mostLoggedInUser + KEY_LOGIN_COUNT, 0)
+                        // Если самая часто авторизующаяся учетка - обновление ее
                         if (currentCount >= mostLoggedInCount) {
                             sharedPreferences.edit().putString(KEY_MOST_LOGGED_IN_USER, username).apply()
                         }

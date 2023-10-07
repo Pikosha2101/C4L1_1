@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.sql.Date
 
-@Entity(tableName = "Agent")
+@Entity(tableName = "Agent") //сущность, представляющая таблицу
 data class Agent(
     @PrimaryKey(autoGenerate = true)
     val agentID: Int,
