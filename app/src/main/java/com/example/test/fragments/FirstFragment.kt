@@ -21,6 +21,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
     private var _binding : FirstFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var token : String
+    private lateinit var password : String
     private lateinit var number : String
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +30,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
     ): View {
         _binding = FirstFragmentBinding.inflate(inflater, container, false)
         token = arguments?.getString("Token")!!
+        password = arguments?.getString("Password")!!
         binding.passwordEditText.isClickable = false
         binding.passwordEditText.isFocusableInTouchMode = false
         binding.phoneEditText.isClickable = false
@@ -66,7 +68,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
                     lastNameEditText.setText(response.body()?.lastname)
                     patronymicEditText.setText(response.body()?.patronymic)
                     phoneEditText.setText(response.body()?.phone)
-
+                    passwordEditText.setText(password)
                 }
             }
 
@@ -74,16 +76,6 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
                 Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
             }
         })
-        /*if (user.isSuccessful) {
-            emailEditText.setText(user.body()?.email)
-            firstNameEditText.setText(user.body()?.firstname)
-            lastNameEditText.setText(user.body()?.lastname)
-            patronymicEditText.setText(user.body()?.patronymic)
-            phoneEditText.setText(user.body()?.phone)
-        } else {
-            Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
-        }*/
-
 
 
         button.setOnClickListener{
@@ -93,42 +85,51 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
 
 
         button3.setOnClickListener{
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            if (emailEditText.text.isEmpty()
+                || firstNameEditText.text.isEmpty()
+                || lastNameEditText.text.isEmpty()
+                || patronymicEditText.text.isEmpty()
+                || passwordEditText.text.isEmpty()
+                || phoneEditText.text.isEmpty()){
+                Toast.makeText(requireContext(), "Заполните все поля", Toast.LENGTH_SHORT).show()
+            } else {
+                val interceptor = HttpLoggingInterceptor()
+                interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-            val client = OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build()
+                val client = OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .build()
 
-            val retrofit = Retrofit.Builder()
-                .baseUrl("http://82.146.37.164:8090/")
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://82.146.37.164:8090/")
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
 
-            val jsonAPI = retrofit.create(JsonAPI::class.java)
+                val jsonAPI = retrofit.create(JsonAPI::class.java)
 
-            val user : Call<UserModel> = jsonAPI.changeUser(token, UserModel(
-                emailEditText.text.toString(),
-                firstNameEditText.text.toString(),
-                lastNameEditText.text.toString(),
-                passwordEditText.text.toString(),
-                patronymicEditText.text.toString()
-            ))
-            user.enqueue(object : Callback<UserModel> {
-                override fun onResponse(
-                    call: Call<UserModel>,
-                    response: Response<UserModel>
-                ) {
-                    if (response.isSuccessful){
-                        Toast.makeText(requireContext(), "Изменено", Toast.LENGTH_SHORT).show()
+                val user : Call<UserModel> = jsonAPI.changeUser(token, UserModel(
+                    emailEditText.text.toString(),
+                    firstNameEditText.text.toString(),
+                    lastNameEditText.text.toString(),
+                    passwordEditText.text.toString(),
+                    patronymicEditText.text.toString()
+                ))
+                user.enqueue(object : Callback<UserModel> {
+                    override fun onResponse(
+                        call: Call<UserModel>,
+                        response: Response<UserModel>
+                    ) {
+                        if (response.isSuccessful){
+                            Toast.makeText(requireContext(), "Изменено", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                        //Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
         }
     }
 }

@@ -52,9 +52,13 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
             val tokenModel : Call<TokenModel> = jsonAPI.authorizationByPass(emailEditText.text.toString(), passwordEditText.text.toString())
             tokenModel.enqueue(object : Callback<TokenModel>{
                 override fun onResponse(call: Call<TokenModel>, response: Response<TokenModel>) {
-                    val token = response.body()?.token
-                    val bundle = createBundle(token)
-                    findNavController().navigate(R.id.action_authorizationFragment_to_firstFragment, bundle)
+                    if (response.isSuccessful){
+                        val token = response.body()?.token
+                        val bundle = createBundle(token, passwordEditText.text.toString())
+                        findNavController().navigate(R.id.action_authorizationFragment_to_firstFragment, bundle)
+                    } else {
+                        Toast.makeText(requireContext(), "Некорректные данные", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 override fun onFailure(call: Call<TokenModel>, t: Throwable) {
@@ -70,10 +74,12 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
 
 
     private fun createBundle(
-        token: Any?
+        token: Any?,
+        password : Any?
     ): Bundle {
         val bundle = Bundle()
         bundle.putString("Token", token.toString())
+        bundle.putString("Password", password.toString())
         return bundle
     }
 }

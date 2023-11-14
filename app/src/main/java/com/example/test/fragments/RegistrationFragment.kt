@@ -65,11 +65,13 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
                 ) {
                     if (response.isSuccessful){
                         Toast.makeText(requireContext(), "Регистрация выполнена успешно", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Ошибка", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Ошибка!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Ошибка", Toast.LENGTH_SHORT).show()
                 }
 
             })
