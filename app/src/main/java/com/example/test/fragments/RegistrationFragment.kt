@@ -12,10 +12,11 @@ import com.example.test.databinding.RegistrationFragmentBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 class RegistrationFragment : Fragment(R.layout.registration_fragment) {
     private var _binding: RegistrationFragmentBinding? = null
@@ -27,6 +28,7 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
         savedInstanceState: Bundle?
     ): View {
         _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -34,10 +36,19 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
         button1.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 try {
+                    val interceptor = HttpLoggingInterceptor()
+                    interceptor.level = HttpLoggingInterceptor.Level.BODY
+
+                    val client = OkHttpClient.Builder()
+                        .addInterceptor(interceptor)
+                        .build()
+
                     val retrofit = Retrofit.Builder()
                         .baseUrl("http://82.146.37.164:8090/")
+                        .client(client)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
+
                     val jsonAPI = retrofit.create(JsonAPI::class.java)
 
                     val userModel = UserModel(
@@ -49,28 +60,18 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
                         phoneEditText.text.toString()
                     )
 
-                    val response = jsonAPI.registrationByPass(userModel)
+                    val response: Response<UserModel> = jsonAPI.registrationByPass(userModel)
+
                     if (response.isSuccessful) {
-                        Toast.makeText(requireContext(), "odfkofdk", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Регистрация выполнена", Toast.LENGTH_SHORT).show()
                     } else {
-                        // Обработка ошибки HTTP 400
-                        val errorBody = response.errorBody()?.string()
-                        Toast.makeText(
-                            requireContext(),
-                            "Ошибка регистрации: $errorBody",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
                     }
-                } catch (e: HttpException) {
-                    // Обработка ошибки HTTP 400
-                    val errorBody = e.response()?.errorBody()?.string()
-                    Toast.makeText(
-                        requireContext(),
-                        "Ошибка регистрации: $errorBody",
-                        Toast.LENGTH_LONG
-                    ).show()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
         button2.setOnClickListener{
             findNavController().navigate(R.id.action_registrationFragment_to_authorizationFragment)
