@@ -31,6 +31,8 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
         return binding.root
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         button1.setOnClickListener {
             val interceptor = HttpLoggingInterceptor()
