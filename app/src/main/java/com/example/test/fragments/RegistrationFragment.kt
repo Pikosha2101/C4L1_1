@@ -1,7 +1,6 @@
 package com.example.test.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.test.R
 import com.example.test.databinding.RegistrationFragmentBinding
-import com.example.test.room.Agent
-import com.example.test.room.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class RegistrationFragment : Fragment(R.layout.registration_fragment) {
     private var _binding: RegistrationFragmentBinding? = null
@@ -30,31 +31,44 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
-        button1.setOnClickListener{
-            if (login1.text.isEmpty() || editTextTextPersonName.text.isEmpty() || editTextTextPassword1.text.isEmpty() || editTextTextPassword2.text.isEmpty())
-            {
-                Toast.makeText(requireContext(), "Заполните все поля!", Toast.LENGTH_SHORT).show()
-            } else {
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
-                coroutineScope.launch {
-                    val database = AppDatabase.getInstance(requireContext())
-                    val count: Int = database.agentDao().getAgentCount() + 1
+        button1.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl("http://82.146.37.164:8090/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                    val jsonAPI = retrofit.create(JsonAPI::class.java)
 
-                    if (editTextTextPassword1.text.toString() == editTextTextPassword2.text.toString()){
-                        if (database.agentDao().getAgentCheck(login1.text.toString(), editTextTextPassword1.text.toString()) == 0){
-                            val agent = Agent(count, login1.text.toString(), editTextTextPersonName.text.toString(), editTextTextPassword1.text.toString())
+                    val userModel = UserModel(
+                        emailEditText.text.toString(),
+                        firstNameEditText.text.toString(),
+                        lastNameEditText.text.toString(),
+                        passwordEditText.text.toString(),
+                        patronymicEditText.text.toString(),
+                        phoneEditText.text.toString()
+                    )
 
-                            database.agentDao().insert(agent)
-                            val agents = database.agentDao().getAllAgents()
-                            Log.d("Agents", agents.toString())
-
-                            Toast.makeText(requireContext(), "Аккаунт создан!", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(requireContext(), "Аккаунт уже существует!", Toast.LENGTH_SHORT).show()
-                        }
+                    val response = jsonAPI.registrationByPass(userModel)
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "odfkofdk", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(requireContext(), "Пароли различаются!", Toast.LENGTH_SHORT).show()
+                        // Обработка ошибки HTTP 400
+                        val errorBody = response.errorBody()?.string()
+                        Toast.makeText(
+                            requireContext(),
+                            "Ошибка регистрации: $errorBody",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
+                } catch (e: HttpException) {
+                    // Обработка ошибки HTTP 400
+                    val errorBody = e.response()?.errorBody()?.string()
+                    Toast.makeText(
+                        requireContext(),
+                        "Ошибка регистрации: $errorBody",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }

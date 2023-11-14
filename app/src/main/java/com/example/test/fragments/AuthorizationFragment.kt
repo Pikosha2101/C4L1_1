@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.test.R
 import com.example.test.databinding.AuthorizationFragmentBinding
-import com.example.test.room.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +36,7 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
             if (editTextTextEmailAddress.text.isEmpty() || editTextTextPassword.text.isEmpty()){
                 Toast.makeText(requireContext(), "Введите данные во все поля!", Toast.LENGTH_LONG).show()
             } else {
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
+                /*val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     val database = AppDatabase.getInstance(requireContext())
                     val agentDao = database.agentDao()
@@ -62,7 +61,9 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
                     }else {
                         Toast.makeText(requireContext(), "Пользователь не существует!", Toast.LENGTH_LONG).show()
                     }
-                }
+
+                }*/
+                findNavController().navigate(R.id.action_authorizationFragment_to_firstFragment)
             }
         }
         button2.setOnClickListener{
