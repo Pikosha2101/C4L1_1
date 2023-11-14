@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.test.R
+import com.example.test.TokenModel
 import com.example.test.databinding.AuthorizationFragmentBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +57,9 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
                     val response = jsonAPI.authorizationByPass(emailEditText.text.toString(), passwordEditText.text.toString())
 
                     if (response.isSuccessful) {
+                        val token = response.body()?.token
                         findNavController().navigate(R.id.action_authorizationFragment_to_firstFragment)
+                        //Toast.makeText(requireContext(), token, Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
                     }
