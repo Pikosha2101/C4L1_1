@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.test.R
 import com.example.test.databinding.RegistrationFragmentBinding
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
@@ -50,7 +51,7 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
 
             val jsonAPI = retrofit.create(JsonAPI::class.java)
 
-            val userModel: Call<UserModel> = jsonAPI.registrationByPass(UserModel(
+            val userModel: Call<ResponseBody> = jsonAPI.registrationByPass(UserModel(
                 emailEditText.text.toString(),
                 firstNameEditText.text.toString(),
                 lastNameEditText.text.toString(),
@@ -58,22 +59,21 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
                 patronymicEditText.text.toString(),
                 phoneEditText.text.toString()))
 
-            userModel.enqueue(object : Callback<UserModel>{
+            userModel.enqueue(object : Callback<ResponseBody>{
                 override fun onResponse(
-                    call: Call<UserModel>,
-                    response: Response<UserModel>
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
                 ) {
-                    if (response.isSuccessful){
-                        Toast.makeText(requireContext(), "Регистрация выполнена успешно", Toast.LENGTH_SHORT).show()
+                    if (!response.isSuccessful){
+                        Toast.makeText(requireContext(), "email или телефон уже существуют", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(requireContext(), "Ошибка", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Регистрация выполнена успешно", Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                    Toast.makeText(requireContext(), "Ошибка", Toast.LENGTH_SHORT).show()
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(requireContext(), "Некорректные данные!", Toast.LENGTH_SHORT).show()
                 }
-
             })
         }
 

@@ -113,7 +113,8 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
                     firstNameEditText.text.toString(),
                     lastNameEditText.text.toString(),
                     passwordEditText.text.toString(),
-                    patronymicEditText.text.toString()
+                    patronymicEditText.text.toString(),
+                    phoneEditText.text.toString()
                 ))
                 user.enqueue(object : Callback<UserModel> {
                     override fun onResponse(
