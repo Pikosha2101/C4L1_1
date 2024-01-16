@@ -29,8 +29,8 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
         savedInstanceState: Bundle?
     ): View {
         _binding = FirstFragmentBinding.inflate(inflater, container, false)
-        token = arguments?.getString("Token")!!
-        password = arguments?.getString("Password")!!
+        //token = arguments?.getString("Token")!!
+        //password = arguments?.getString("Password")!!
         binding.passwordEditText.isClickable = false
         binding.passwordEditText.isFocusableInTouchMode = false
         binding.phoneEditText.isClickable = false
@@ -40,7 +40,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
 
-        val interceptor = HttpLoggingInterceptor()
+        /*val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val client = OkHttpClient.Builder()
@@ -75,7 +75,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
             override fun onFailure(call: Call<UserModel>, t: Throwable) {
                 Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
             }
-        })
+        })*/
 
 
         button.setOnClickListener{
@@ -85,7 +85,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
 
 
         button3.setOnClickListener{
-            if (emailEditText.text.isEmpty()
+            /*if (emailEditText.text.isEmpty()
                 || firstNameEditText.text.isEmpty()
                 || lastNameEditText.text.isEmpty()
                 || patronymicEditText.text.isEmpty()
@@ -130,7 +130,7 @@ class FirstFragment : Fragment(R.layout.first_fragment) {
                         //Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
                     }
                 })
-            }
+            }*/
         }
     }
 }

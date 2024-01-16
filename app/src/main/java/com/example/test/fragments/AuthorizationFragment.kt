@@ -34,7 +34,7 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         button.setOnClickListener{
-            val interceptor = HttpLoggingInterceptor()
+            /*val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
 
             val client = OkHttpClient.Builder()
@@ -64,7 +64,8 @@ class AuthorizationFragment : Fragment(R.layout.authorization_fragment) {
                 override fun onFailure(call: Call<TokenModel>, t: Throwable) {
                     Toast.makeText(requireContext(), "Возникла ошибка", Toast.LENGTH_SHORT).show()
                 }
-            })
+            })*/
+            findNavController().navigate(R.id.action_authorizationFragment_to_firstFragment)
         }
         button2.setOnClickListener{
             findNavController().navigate(R.id.action_authorizationFragment_to_registrationFragment)

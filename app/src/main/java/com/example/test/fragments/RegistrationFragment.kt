@@ -36,7 +36,7 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         button1.setOnClickListener {
-            val interceptor = HttpLoggingInterceptor()
+            /*val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
 
             val client = OkHttpClient.Builder()
@@ -74,7 +74,7 @@ class RegistrationFragment : Fragment(R.layout.registration_fragment) {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(requireContext(), "Некорректные данные!", Toast.LENGTH_SHORT).show()
                 }
-            })
+            })*/
         }
 
 
